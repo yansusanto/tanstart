@@ -61,9 +61,9 @@ function Settings() {
 								Save changes
 							</Button>
 							{message && (
-								<p role="status" className="text-sm text-muted-foreground">
+								<output className="text-sm text-muted-foreground">
 									{message}
-								</p>
+								</output>
 							)}
 						</div>
 					</form>
