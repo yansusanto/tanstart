@@ -1,0 +1,12 @@
+{
+	"name": "dashboard",
+	"title": "Dashboard",
+	"description": "A shadcn sidebar dashboard inside /account: overview with stat cards and a table, a settings page, and a user menu with sign out. Requires auth.",
+	"requires": ["auth"],
+	"overwrite": ["src/routes/account.tsx"],
+	"notes": [
+		"Open /account after signing in. The sidebar, header and guard live in src/routes/account.tsx.",
+		"Add a page: create src/routes/account/<name>.tsx, then add it to the items list in src/components/app-sidebar.tsx and to titles in src/routes/account.tsx.",
+		"The numbers and orders on the overview are placeholders."
+	]
+}

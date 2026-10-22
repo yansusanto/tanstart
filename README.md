@@ -45,6 +45,22 @@ The designs are unofficial, inspired-by starting points. Adapt them into an orig
 
 Fonts are self-hosted through `@fontsource-variable/*` packages imported at the top of `src/theme.css`. Do not use Google Fonts links, because they block rendering and lower the Lighthouse score. Several designs name paid fonts, so the themes use free substitutes (Inter, Newsreader, JetBrains Mono).
 
+### Heading style
+
+The starter leaves headings plain. Each theme still defines `--font-display`, `--heading-weight` and `--heading-tracking`, so a real site can opt in by adding this to `src/styles.css`:
+
+```css
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-heading);
+    font-weight: var(--heading-weight);
+    letter-spacing: var(--heading-tracking);
+  }
+}
+```
+
+The `font-heading` utility class is also available for single elements.
+
 ### Dark mode
 
 Press **d** to toggle dark mode. The page follows the system setting until toggled, then remembers the choice. The hotkey is ignored while typing in a field.
@@ -75,8 +91,11 @@ yarn add-module auth     # add one to an existing site
 | Module | What it adds |
 |---|---|
 | `auth` | Email and password accounts with [Better Auth](https://www.better-auth.com), stored in Cloudflare D1 through Drizzle. Adds `/login`, a protected `/account` page, `getSession` for route guards, and SQL migrations. |
+| `dashboard` | A [shadcn/ui](https://ui.shadcn.com) sidebar dashboard inside `/account`: overview with stat cards and a table, a settings page that edits the profile name, and a user menu with sign out. Requires `auth`, which is added automatically. |
 
 **Auth setup.** Locally it works right after the module is added: run `yarn dev` and open `/login`. A random `BETTER_AUTH_SECRET` is written to `.dev.vars` and the local D1 database is migrated. For production, run `yarn auth:setup` once. It creates the D1 database, saves its id in `wrangler.jsonc`, applies the migrations and prints a secret to add to the Worker (dashboard: **Settings**, then **Variables and secrets**). Commit `wrangler.jsonc` afterwards. Protect a page by copying the `beforeLoad` guard from `src/routes/account.tsx`.
+
+**Dashboard.** Pages live in `src/routes/account/`. To add one, create the route file, then add it to the `items` list in `src/components/app-sidebar.tsx` and to `titles` in `src/routes/account.tsx`. The overview numbers are placeholders. The sidebar follows the site's design tokens, so it restyles with every design.
 
 To change the auth tables, edit `src/db/schema.ts`, run `yarn db:generate`, then `yarn db:migrate:local` and `yarn db:migrate:remote`.
 

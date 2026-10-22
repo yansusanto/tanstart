@@ -47,6 +47,15 @@ export function addModule(name, { install = true } = {}) {
     throw new Error(`Unknown module "${name}". Available: ${listModules().map((m) => m.name).join(', ') || 'none'}`)
   }
   const mod = JSON.parse(readFileSync(join(dir, 'module.json'), 'utf8'))
+  // Required modules first (installed once, in order)
+  const have = readJson('starter.json', { modules: [] }).modules
+  for (const req of mod.requires ?? []) {
+    if (!have.includes(req)) {
+      console.log(`Module "${name}" requires "${req}". Adding it first.`)
+      addModule(req, { install })
+    }
+  }
+
   const pkg = readJson('package.json')
   const vars = { name: pkg.name }
   const starter = readJson('starter.json', { modules: [] })
@@ -57,11 +66,12 @@ export function addModule(name, { install = true } = {}) {
   if (existsSync(filesDir)) {
     for (const rel of walk(filesDir)) {
       const dest = join(root, rel)
-      if (existsSync(dest)) {
+      if (existsSync(dest) && !mod.overwrite?.includes(rel)) {
         report.skipped.push(rel)
         continue
       }
       mkdirSync(dirname(dest), { recursive: true })
+      if (existsSync(dest)) report.overwritten = [...(report.overwritten ?? []), rel]
       copyFileSync(join(filesDir, rel), dest)
       report.copied.push(rel)
     }
@@ -118,7 +128,7 @@ export function addModule(name, { install = true } = {}) {
     for (const cmd of mod.postAdd ?? []) execSync(cmd, { cwd: root, stdio: 'inherit' })
   }
 
-  console.log(`\nAdded module "${name}": ${report.copied.length} files copied${report.skipped.length ? `, ${report.skipped.length} already existed and were kept (${report.skipped.join(', ')})` : ''}.`)
+  console.log(`\nAdded module "${name}": ${report.copied.length} files copied${report.overwritten ? ` (replaced ${report.overwritten.join(', ')})` : ''}${report.skipped.length ? `, ${report.skipped.length} already existed and were kept (${report.skipped.join(', ')})` : ''}.`)
   for (const note of mod.notes ?? []) console.log(`  - ${note}`)
   return report
 }
