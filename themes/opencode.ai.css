@@ -5,11 +5,11 @@
  *
  * Current design: OpenCode (opencode.ai)
  */
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+@import '@fontsource-variable/jetbrains-mono';
 
 :root {
 	--font-body:
-		"Berkeley Mono", "JetBrains Mono", "IBM Plex Mono", ui-monospace,
+		"Berkeley Mono", "JetBrains Mono Variable", "IBM Plex Mono", ui-monospace,
 		SFMono-Regular, Menlo, monospace;
 	--font-display: var(--font-body);
 	--heading-weight: 700;

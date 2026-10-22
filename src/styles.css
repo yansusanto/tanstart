@@ -1,4 +1,4 @@
-/* theme.css first: its font @import must precede all other rules */
+/* theme.css first: its font imports must precede all other rules */
 @import "./theme.css";
 @import 'tailwindcss';
 @plugin '@tailwindcss/typography';

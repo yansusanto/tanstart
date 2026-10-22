@@ -10,9 +10,11 @@ Apply the design "$ARGUMENTS" to this project.
 3. Otherwise read `DESIGN.md` in full: the front matter (colors, typography, rounded) and the Colors, Typography, Shapes and Do's and Don'ts sections.
 4. Rewrite ONLY `src/theme.css`:
    - Map the palette to the shadcn tokens (`--background`, `--foreground`, `--primary`, `--secondary`, `--muted`, `--accent`, `--destructive`, `--border`, `--ring`, `--card`, `--chart-*`) in `:root` and `.dark`. If the design is dark-only, make `:root` dark and keep `.dark` identical. If it is light-only, derive a sensible `.dark`.
-   - Set `--font-body`, `--font-display` and the Google Fonts `@import` at the top. Use a free substitute when the design names a paid font, as the DESIGN.md suggests.
+   - Set `--font-body` and `--font-display`. Use a free substitute when the design names a paid font, as the DESIGN.md suggests.
+   - Self-host fonts, never Google Fonts links (they block rendering). Install the `@fontsource-variable/<font>` package with `yarn add`, add `@import '@fontsource-variable/<font>';` at the top of `src/theme.css`, and use the family name `'<Font> Variable'`. If no variable package exists, use `@fontsource/<font>` with the needed weights.
    - Set `--radius` from the design's default rounded value.
    - Update the "Current design" line in the header comment.
+   - Check contrast: `--primary-foreground` on `--primary`, and `--muted-foreground` and `--foreground` on `--background` and `--card`, must be at least 4.5:1 in both modes. If the design's brand color fails, use its darker shade or the nearest passing one, and say so in the report.
 5. If the design needs a style that tokens cannot express (gradients, shadows, uppercase headings), add a small, named rule to `src/styles.css` under `@layer base`, not inline in components.
 6. Do not edit components or routes to restyle them. If a component hardcodes a color, fix it to use a token.
 7. Save a copy of the finished theme as `themes/<brand>.css`, so the next switch is instant. Run `yarn build`, then report the tokens that changed in a short list and anything in the design that could not be mapped.

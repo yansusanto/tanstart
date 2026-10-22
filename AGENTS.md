@@ -10,6 +10,8 @@ Each site picks one design from the awesome-claude-design collection (https://gi
 - `yarn init-site` runs once on a new project: sets the project name, lists the designs, and applies the one chosen (Enter keeps Cursor, the default). Themes already saved in `themes/` apply instantly. Others are mapped by Claude through `/apply-design` and then saved to `themes/`.
 - `src/theme.css` is the only file that holds colors, fonts and radius. `src/styles.css` maps those tokens into Tailwind and rarely changes.
 - Components and routes must use theme tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, `border-border`, `rounded-lg`). Never hardcode hex colors, font names or pixel radii in components. This keeps a design switch to one file.
+- Press "d" to toggle dark mode (`src/components/theme-hotkey.tsx`). It follows the system setting until toggled, then remembers the choice.
+- Fonts are self-hosted through `@fontsource-variable/*` packages imported in `src/theme.css`. Do not use Google Fonts links or `@import url(...)`. The production build inlines the CSS, and Lighthouse scores 100 on all four categories, so keep it that way: add a meta description to each route, keep text contrast at 4.5:1 or better, and avoid blocking third-party requests.
 - Add UI with shadcn/ui (`npx shadcn@latest add <component>`), which already reads these tokens.
 - The DESIGN.md files are unofficial, inspired-by starting points. Adapt them into an original identity and do not copy a brand directly.
 

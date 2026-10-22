@@ -6,7 +6,9 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ThemeHotkey, themeInitScript } from "#/components/theme-hotkey";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
+import inlineCss from "../styles.css?inline";
 import appCss from "../styles.css?url";
 
 interface MyRouterContext {
@@ -26,25 +28,38 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			{
 				title: "TanStack Start Starter",
 			},
-		],
-		links: [
 			{
-				rel: "stylesheet",
-				href: appCss,
+				name: "description",
+				content:
+					"A TanStack Start starter for Cloudflare Workers with swappable designs, Tailwind and shadcn/ui.",
 			},
 		],
+		// Production inlines the stylesheet so it does not block first paint.
+		...(import.meta.env.PROD
+			? {
+					links: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
+					styles: [{ children: inlineCss }],
+				}
+			: {
+					links: [
+						{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+						{ rel: "stylesheet", href: appCss },
+					],
+				}),
 	}),
 	shellComponent: RootDocument,
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
+		<html lang="en" suppressHydrationWarning>
 			<head>
+				<script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
 				<HeadContent />
 			</head>
 			<body>
 				{children}
+				<ThemeHotkey />
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",

@@ -5,11 +5,12 @@
  *
  * Current design: Claude (claude.com). Copernicus and StyreneB are proprietary, so Newsreader and Inter are the substitutes.
  */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/newsreader';
 
 :root {
-	--font-body: 'StyreneB', 'Inter', system-ui, sans-serif;
-	--font-display: 'Copernicus', 'Tiempos Headline', 'Newsreader', Georgia, serif;
+	--font-body: 'StyreneB', 'Inter Variable', system-ui, sans-serif;
+	--font-display: 'Copernicus', 'Tiempos Headline', 'Newsreader Variable', Georgia, serif;
 	--heading-weight: 400;
 	--heading-tracking: -0.025em;
 	--radius: 8px;
