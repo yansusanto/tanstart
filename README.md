@@ -1,216 +1,107 @@
-Welcome to your new TanStack Start app!
+# tanstart
 
-# Getting Started
+A starter for new websites: TanStack Start on Cloudflare Workers, with a design you pick from a collection of ready-made design systems. Scores 100 on all four Lighthouse categories out of the box.
 
-To run this application:
+**Stack:** TanStack Start (React, file-based routing, server functions), Tailwind CSS v4, shadcn/ui, TanStack Query, Biome, Cloudflare Workers.
+
+## Start a new site
+
+1. On GitHub, click **Use this template** and create the new repo, then clone it.
+2. Install and run the setup:
+
+   ```bash
+   yarn install
+   yarn init-site
+   ```
+
+3. Enter the project name, then pick a design. Type a number, a brand name, or any text to filter the list (for example `dark` or `bank`). Press Enter to keep the default, **Cursor**.
+4. Start the dev server:
+
+   ```bash
+   yarn dev
+   ```
+
+   The site runs at http://localhost:4000.
+
+`yarn init-site` sets `name` in `package.json` and `wrangler.jsonc`, so each site becomes its own Worker and never overwrites another.
+
+## Designs
+
+Designs come from [awesome-claude-design](https://github.com/VoltAgent/awesome-claude-design), downloaded with the [`getdesign`](https://www.npmjs.com/package/getdesign) CLI. A design is a `DESIGN.md` file that describes colors, typography, shape and components.
+
+| Command | What it does |
+|---|---|
+| `yarn design:list` | Lists the available brands. |
+| `yarn design <brand>` | Downloads `DESIGN.md` for that brand. Add `--force` to replace the current one. |
+| `/apply-design <brand>` | Claude Code command. Downloads the design and rewrites `src/theme.css` from it. |
+
+**How switching works.** `src/theme.css` is the only file that holds colors, fonts and radius. Components use theme tokens through Tailwind classes (`bg-primary`, `text-muted-foreground`, `rounded-lg`) and never hardcode colors, so changing the design is a one-file change.
+
+Themes that have been applied before are saved in `themes/` (`cursor`, `opencode.ai`, `claude`), so switching back is instant. A new design is mapped by Claude the first time and saved there. Ask Claude "apply stripe" or run `/apply-design stripe`.
+
+The designs are unofficial, inspired-by starting points. Adapt them into an original identity rather than copying a brand.
+
+### Fonts
+
+Fonts are self-hosted through `@fontsource-variable/*` packages imported at the top of `src/theme.css`. Do not use Google Fonts links, because they block rendering and lower the Lighthouse score. Several designs name paid fonts, so the themes use free substitutes (Inter, Newsreader, JetBrains Mono).
+
+### Dark mode
+
+Press **d** to toggle dark mode. The page follows the system setting until toggled, then remembers the choice. The hotkey is ignored while typing in a field.
+
+## Deploy
+
+Deploys target Cloudflare Workers.
 
 ```bash
-yarn install
-yarn run dev
+yarn deploy
 ```
 
-# Building For Production
+This runs `yarn build` and `wrangler deploy`. Run `npx wrangler login` first if the machine is not signed in.
 
-To build this application for production:
+**Automatic deploys.** In the Cloudflare dashboard, open **Workers & Pages**, choose the Worker, and connect the Git repo under **Settings**, then **Builds**. Each push to `main` then builds and deploys.
 
-```bash
-yarn run build
+**Domains.** Add the domain under the Worker's **Settings**, then **Domains & Routes**, then **Custom domain**. To redirect `www` to the apex domain, add a proxied `CNAME` for `www` and a redirect rule from `https://www.example.com/*` to `https://example.com/${1}` (301, preserve query string). Domains are set per site in the dashboard and are intentionally not stored in this template.
+
+## Project structure
+
+```
+src/
+  routes/            File-based routes. __root.tsx holds the document shell and default meta tags.
+  components/ui/     shadcn/ui components.
+  components/        Site components (theme-hotkey.tsx).
+  theme.css          Design tokens: colors, fonts, radius. The file that changes per design.
+  styles.css         Maps tokens into Tailwind. Rarely changes.
+themes/              Saved theme.css files, one per design.
+scripts/init.mjs     The yarn init-site prompt.
+.claude/commands/    The /apply-design command.
+DESIGN.md            The active design, downloaded by getdesign.
+AGENTS.md            Project rules for Claude and other coding agents.
 ```
 
-## Styling
+Add shadcn/ui components with `npx shadcn@latest add <component>`. They already read the theme tokens.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## Scripts
 
-### Removing Tailwind CSS
+| Script | Purpose |
+|---|---|
+| `yarn dev` | Dev server on port 4000. |
+| `yarn build` | Production build. |
+| `yarn preview` | Serve the production build locally. |
+| `yarn deploy` | Build and deploy to Cloudflare. |
+| `yarn check` | Biome lint and format check. |
+| `yarn init-site` | First-run setup: project name and design. |
+| `yarn design <brand>` | Download a `DESIGN.md`. |
+| `yarn design:list` | List available designs. |
 
-If you prefer not to use Tailwind CSS:
+## Keeping the Lighthouse score at 100
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
+- Give every route a `description` meta tag. The root route has a default.
+- Keep text contrast at 4.5:1 or better. When a design's brand color fails with white text, use its darker shade (Cursor uses `#d04200`).
+- Avoid render-blocking third-party requests. The production build inlines the CSS.
+- Keep a favicon in `public/`.
 
-## Linting & Formatting
+## Notes
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-yarn run lint
-yarn run format
-yarn run check
-```
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
-
-## Deploy to Cloudflare Workers
-
-This project uses the Cloudflare Vite plugin (configured in `vite.config.ts`) and `wrangler.jsonc`:
-
-1. Install Wrangler: `npm install -g wrangler`
-2. Authenticate: `wrangler login`
-3. Deploy: `npx wrangler deploy`
-
-For production env vars, run `wrangler secret put MY_VAR` for each secret listed in `.env.example`. Public (non-secret) vars go in `wrangler.jsonc` under `vars`.
-
-KV, D1, R2, and Durable Object bindings are configured in `wrangler.jsonc` — see https://developers.cloudflare.com/workers/wrangler/configuration/.
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+- Dev port is 4000, to avoid clashing with other projects on 3000.
+- The TanStack devtools panel appears in development only and is removed from production builds.
