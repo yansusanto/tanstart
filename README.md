@@ -63,6 +63,23 @@ This runs `yarn build` and `wrangler deploy`. Run `npx wrangler login` first if 
 
 **Domains.** Add the domain under the Worker's **Settings**, then **Domains & Routes**, then **Custom domain**. To redirect `www` to the apex domain, add a proxied `CNAME` for `www` and a redirect rule from `https://www.example.com/*` to `https://example.com/${1}` (301, preserve query string). Domains are set per site in the dashboard and are intentionally not stored in this template.
 
+## Modules
+
+Optional features live in `modules/<name>/`. A module has a `module.json` (packages, scripts, Cloudflare bindings, secrets, notes) and a `files/` tree that is copied into the site. `yarn init-site` offers them after the design, and the choice is recorded in `starter.json`.
+
+```bash
+yarn add-module          # list modules
+yarn add-module auth     # add one to an existing site
+```
+
+| Module | What it adds |
+|---|---|
+| `auth` | Email and password accounts with [Better Auth](https://www.better-auth.com), stored in Cloudflare D1 through Drizzle. Adds `/login`, a protected `/account` page, `getSession` for route guards, and SQL migrations. |
+
+**Auth setup.** Locally it works right after the module is added: run `yarn dev` and open `/login`. A random `BETTER_AUTH_SECRET` is written to `.dev.vars` and the local D1 database is migrated. For production, run `yarn auth:setup` once. It creates the D1 database, saves its id in `wrangler.jsonc`, applies the migrations and prints a secret to add to the Worker (dashboard: **Settings**, then **Variables and secrets**). Commit `wrangler.jsonc` afterwards. Protect a page by copying the `beforeLoad` guard from `src/routes/account.tsx`.
+
+To change the auth tables, edit `src/db/schema.ts`, run `yarn db:generate`, then `yarn db:migrate:local` and `yarn db:migrate:remote`.
+
 ## Updating a site from the template
 
 GitHub templates copy the files once, so a site does not receive later starter changes on its own. In the site, run the Claude Code command:
@@ -84,6 +101,9 @@ src/
   styles.css         Maps tokens into Tailwind. Rarely changes.
 themes/              Saved theme.css files, one per design.
 scripts/init.mjs     The yarn init-site prompt.
+scripts/modules.mjs  Adds a module (yarn add-module).
+modules/             Optional features: auth, and more over time.
+starter.json         Modules installed in this site.
 .claude/commands/    The /apply-design and /update-starter commands.
 DESIGN.md            The active design, downloaded by getdesign.
 AGENTS.md            Project rules for Claude and other coding agents.
@@ -100,7 +120,8 @@ Add shadcn/ui components with `npx shadcn@latest add <component>`. They already 
 | `yarn preview` | Serve the production build locally. |
 | `yarn deploy` | Build and deploy to Cloudflare. |
 | `yarn check` | Biome lint and format check. |
-| `yarn init-site` | First-run setup: project name and design. |
+| `yarn init-site` | First-run setup: project name, design and modules. |
+| `yarn add-module <name>` | Add a module to this site. |
 | `yarn design <brand>` | Download a `DESIGN.md`. |
 | `yarn design:list` | List available designs. |
 

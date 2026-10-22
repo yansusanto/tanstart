@@ -13,6 +13,7 @@ Each site picks one design from the awesome-claude-design collection (https://gi
 - Press "d" to toggle dark mode (`src/components/theme-hotkey.tsx`). It follows the system setting until toggled, then remembers the choice.
 - Fonts are self-hosted through `@fontsource-variable/*` packages imported in `src/theme.css`. Do not use Google Fonts links or `@import url(...)`. The production build inlines the CSS, and Lighthouse scores 100 on all four categories, so keep it that way: add a meta description to each route, keep text contrast at 4.5:1 or better, and avoid blocking third-party requests.
 - `/update-starter` pulls template changes into a site while protecting the site's design, name, domains and page content. It records the last synced commit in `.starter-sync`.
+- Optional features are modules in `modules/<name>/` (see README). Add one with `yarn add-module <name>`. Installed modules are listed in `starter.json`. To create a module, add `module.json` and a `files/` tree, and test it by running `yarn add-module` in a throwaway copy. Files under `modules/` are excluded from type checking, because they are copied into the site.
 - Add UI with shadcn/ui (`npx shadcn@latest add <component>`), which already reads these tokens.
 - The DESIGN.md files are unofficial, inspired-by starting points. Adapt them into an original identity and do not copy a brand directly.
 

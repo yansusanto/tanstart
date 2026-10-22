@@ -12,10 +12,12 @@ Rules: never touch the site's own identity. Do not commit. Leave the changes in 
 4. **Protected files (site-specific, never overwrite):**
    - `src/theme.css`, `DESIGN.md`, `themes/` (the site's design)
    - `src/routes/*` page content (take only structural fixes, such as meta handling in `__root.tsx`, and apply them by hand without losing the site's titles, descriptions and content)
+   - `starter.json` (the site's list of installed modules)
    - `README.md`, `public/` assets the site replaced (favicon, images)
    - `name` in `package.json` and `wrangler.jsonc`, and any `routes`/domains in `wrangler.jsonc`
 5. **Everything else** (scripts, `src/components/`, `src/styles.css`, `scripts/`, `.claude/commands/`, `AGENTS.md`, `biome.json`, config files): apply the template's change for each file that differs between the baseline and `template/main`. If the site also changed the same file since the baseline, merge by hand and keep both intents. Use `git diff <baseline> template/main -- <file>` and apply it with `git apply --3way` where possible.
-6. **Dependencies.** Apply new or bumped entries from the template's `package.json` (dependencies, devDependencies, scripts) without changing the site's name or its own extra packages. Then run `yarn install`.
-7. **Check.** Run `yarn build` and `yarn check`. Fix anything the update broke.
-8. **Record.** Write the template's current commit (`git rev-parse template/main`) to `.starter-sync`.
-9. **Report** in a short list: commits applied, files changed, files skipped as protected, conflicts resolved by hand, and anything the user should look at. Do not commit or push.
+6. **Modules.** Read `starter.json`. For every module listed there, treat the files under `modules/<name>/files/` as the template's current version of files the site already has copied into its own tree (same relative path). Apply template changes to those site files like any other file, merging by hand where the site changed them. If the module has new migration files, copy them into `migrations/` and tell the user to run `yarn db:migrate:local` and `yarn db:migrate:remote`. Update the `modules/` folder itself so new modules become available, but never install a module the site did not choose.
+7. **Dependencies.** Apply new or bumped entries from the template's `package.json` (dependencies, devDependencies, scripts) without changing the site's name or its own extra packages. Then run `yarn install`.
+8. **Check.** Run `yarn build` and `yarn check`. Fix anything the update broke.
+9. **Record.** Write the template's current commit (`git rev-parse template/main`) to `.starter-sync`.
+10. **Report** in a short list: commits applied, files changed, files skipped as protected, conflicts resolved by hand, and anything the user should look at. Do not commit or push.

@@ -4,6 +4,7 @@
 import { execSync, spawnSync } from 'node:child_process'
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { createInterface } from 'node:readline'
+import { addModule, listModules } from './modules.mjs'
 
 const DEFAULT = 'cursor'
 const rl = createInterface({ input: process.stdin, output: process.stdout })
@@ -55,9 +56,22 @@ while (!chosen) {
     show(view)
   }
 }
+// 3. Modules
+const modules = listModules()
+let picked = []
+if (modules.length) {
+  console.log('\nOptional modules:')
+  modules.forEach((m, i) => console.log(`${String(i + 1).padStart(3)}  ${m.name.padEnd(12)} ${m.description}`))
+  const a = await ask('\nModules: numbers or names separated by commas (Enter = none): ')
+  picked = a
+    .split(/[,\s]+/)
+    .filter(Boolean)
+    .map((t) => (/^\d+$/.test(t) ? modules[Number(t) - 1]?.name : t))
+    .filter(Boolean)
+}
 rl.close()
 
-// 3. Apply
+// 4. Apply design
 spawnSync('yarn', ['-s', 'design', chosen, '--force'], { stdio: 'inherit' })
 const cached = `themes/${chosen}.css`
 if (existsSync(cached)) {
@@ -77,4 +91,14 @@ if (existsSync(cached)) {
     console.log(`  claude  then  /apply-design ${chosen}`)
   }
 }
+
+// 5. Add modules
+for (const name of picked) {
+  try {
+    addModule(name)
+  } catch (e) {
+    console.error(e.message)
+  }
+}
+
 console.log('\nDone. Start with: yarn dev')

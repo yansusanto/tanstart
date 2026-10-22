@@ -1,0 +1,30 @@
+{
+	"name": "auth",
+	"title": "Authentication",
+	"description": "Email and password accounts with Better Auth, stored in Cloudflare D1 through Drizzle. Adds /login, a protected /account example and session helpers.",
+	"dependencies": {
+		"better-auth": "^1.7.12",
+		"drizzle-orm": "^0.45.4"
+	},
+	"devDependencies": {
+		"drizzle-kit": "^0.31.11"
+	},
+	"scripts": {
+		"db:generate": "drizzle-kit generate",
+		"db:migrate:local": "wrangler d1 migrations apply DB --local",
+		"db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+		"cf-typegen": "wrangler types",
+		"auth:setup": "node scripts/setup-auth.mjs"
+	},
+	"wrangler": {
+		"d1_databases": [{ "binding": "DB", "database_name": "__NAME__-db" }]
+	},
+	"secrets": ["BETTER_AUTH_SECRET"],
+	"gitignore": [".dev.vars", "worker-configuration.d.ts"],
+	"postAdd": ["yarn -s cf-typegen", "yarn -s db:migrate:local"],
+	"notes": [
+		"Local: ready. Run yarn dev, then open /login.",
+		"Production: run `yarn auth:setup` once. It creates the D1 database, writes its id to wrangler.jsonc, applies the migrations, and prints the BETTER_AUTH_SECRET to add as a secret on the Worker.",
+		"Protect a page by copying the beforeLoad guard from src/routes/account.tsx."
+	]
+}
