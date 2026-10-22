@@ -1,0 +1,63 @@
+/*
+ * THEME FILE. This is the only file that changes when a site switches design.
+ * Source: DESIGN.md (run `yarn design <brand>`), applied with /apply-design.
+ * Components must use these tokens through Tailwind classes (bg-primary, text-muted-foreground, ...) and never hardcode colors.
+ *
+ * Current design: Claude (claude.com). Copernicus and StyreneB are proprietary, so Newsreader and Inter are the substitutes.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap');
+
+:root {
+	--font-body: 'StyreneB', 'Inter', system-ui, sans-serif;
+	--font-display: 'Copernicus', 'Tiempos Headline', 'Newsreader', Georgia, serif;
+	--heading-weight: 400;
+	--heading-tracking: -0.025em;
+	--radius: 8px;
+
+	--background: #faf9f5;
+	--foreground: #141413;
+	--card: #efe9de;
+	--card-foreground: #141413;
+	--popover: #faf9f5;
+	--popover-foreground: #141413;
+	--primary: #cc785c;
+	--primary-foreground: #ffffff;
+	--secondary: #e8e0d2;
+	--secondary-foreground: #141413;
+	--muted: #f5f0e8;
+	--muted-foreground: #6c6a64;
+	--accent: #f5f0e8;
+	--accent-foreground: #141413;
+	--destructive: #c64545;
+	--destructive-foreground: #ffffff;
+	--border: #e6dfd8;
+	--input: #e6dfd8;
+	--ring: #cc785c;
+	--chart-1: #cc785c;
+	--chart-2: #5db8a6;
+	--chart-3: #e8a55a;
+	--chart-4: #5db872;
+	--chart-5: #6c6a64;
+}
+
+.dark {
+	--background: #181715;
+	--foreground: #faf9f5;
+	--card: #252320;
+	--card-foreground: #faf9f5;
+	--popover: #252320;
+	--popover-foreground: #faf9f5;
+	--primary: #cc785c;
+	--primary-foreground: #ffffff;
+	--secondary: #252320;
+	--secondary-foreground: #faf9f5;
+	--muted: #1f1e1b;
+	--muted-foreground: #a09d96;
+	--accent: #252320;
+	--accent-foreground: #faf9f5;
+	--destructive: #c64545;
+	--destructive-foreground: #ffffff;
+	--border: rgba(250, 249, 245, 0.14);
+	--input: rgba(250, 249, 245, 0.2);
+	--ring: #cc785c;
+}
