@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
 import {
@@ -35,7 +35,9 @@ function Home() {
 				radius come from <code>src/theme.css</code>.
 			</p>
 			<div className="mt-8 flex gap-3">
-				<Button>Get started</Button>
+				<Button asChild>
+					<Link to="/login">Get started</Link>
+				</Button>
 				<Button variant="secondary">Documentation</Button>
 				<Button variant="outline">GitHub</Button>
 			</div>

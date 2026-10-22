@@ -17,14 +17,40 @@
 		"auth:setup": "node scripts/setup-auth.mjs"
 	},
 	"wrangler": {
-		"d1_databases": [{ "binding": "DB", "database_name": "__NAME__-db" }]
+		"d1_databases": [
+			{
+				"binding": "DB",
+				"database_name": "__NAME__-db"
+			}
+		]
 	},
-	"secrets": ["BETTER_AUTH_SECRET"],
-	"gitignore": [".dev.vars", "worker-configuration.d.ts"],
-	"postAdd": ["yarn -s cf-typegen", "yarn -s db:migrate:local"],
+	"secrets": [
+		"BETTER_AUTH_SECRET"
+	],
+	"gitignore": [
+		".dev.vars",
+		"worker-configuration.d.ts"
+	],
+	"postAdd": [
+		"yarn -s cf-typegen",
+		"yarn -s db:migrate:local"
+	],
 	"notes": [
+		"The \"Get started\" button on the home page now links to /login.",
 		"Local: ready. Run yarn dev, then open /login.",
 		"Production: run `yarn auth:setup` once. It creates the D1 database, writes its id to wrangler.jsonc, applies the migrations, and prints the BETTER_AUTH_SECRET to add as a secret on the Worker.",
 		"Protect a page by copying the beforeLoad guard from src/routes/account.tsx."
+	],
+	"patches": [
+		{
+			"file": "src/routes/index.tsx",
+			"find": "import { createFileRoute } from \"@tanstack/react-router\";",
+			"replace": "import { createFileRoute, Link } from \"@tanstack/react-router\";"
+		},
+		{
+			"file": "src/routes/index.tsx",
+			"find": "<Button>Get started</Button>",
+			"replace": "<Button asChild>\n\t\t\t\t\t<Link to=\"/login\">Get started</Link>\n\t\t\t\t</Button>"
+		}
 	]
 }

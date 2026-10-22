@@ -15,7 +15,8 @@ A starter for new websites: TanStack Start on Cloudflare Workers, with a design 
    ```
 
 3. Enter the project name, then pick a design. Type a number, a brand name, or any text to filter the list (for example `dark` or `bank`). Press Enter to keep the default, **Cursor**.
-4. Start the dev server:
+4. Choose which modules to keep. The starter ships with **login** (`auth`) and a **dashboard**, so the demo shows the full flow. Press Enter to keep both, type `none` for a landing-page-only site, or type `auth` to keep login without the dashboard. Removed modules are deleted cleanly, including their packages and Cloudflare bindings.
+5. Start the dev server:
 
    ```bash
    yarn dev
@@ -23,7 +24,7 @@ A starter for new websites: TanStack Start on Cloudflare Workers, with a design 
 
    The site runs at http://localhost:4000.
 
-`yarn init-site` sets `name` in `package.json` and `wrangler.jsonc`, so each site becomes its own Worker and never overwrites another.
+`yarn init-site` sets `name` in `package.json` and `wrangler.jsonc`, so each site becomes its own Worker and never overwrites another. It also renames the D1 database to `<name>-db` and drops the template's database id, so a new site never shares the demo's data. For kept modules it creates the local secret in `.dev.vars` and migrates the local database, so `/login` works straight away.
 
 ## Designs
 
@@ -81,11 +82,12 @@ This runs `yarn build` and `wrangler deploy`. Run `npx wrangler login` first if 
 
 ## Modules
 
-Optional features live in `modules/<name>/`. A module has a `module.json` (packages, scripts, Cloudflare bindings, secrets, notes) and a `files/` tree that is copied into the site. `yarn init-site` offers them after the design, and the choice is recorded in `starter.json`.
+Features live in `modules/<name>/`. This starter ships with `auth` and `dashboard` already installed, and `starter.json` records what is installed and which files each module copied. A module has a `module.json` (packages, scripts, Cloudflare bindings, secrets, notes) and a `files/` tree that is copied into the site. `yarn init-site` offers them after the design, and the choice is recorded in `starter.json`.
 
 ```bash
-yarn add-module          # list modules
-yarn add-module auth     # add one to an existing site
+yarn add-module            # list modules and which are installed
+yarn add-module <name>     # add one to an existing site
+yarn remove-module <name>  # remove one (a module that others require must go last)
 ```
 
 | Module | What it adds |
@@ -93,7 +95,7 @@ yarn add-module auth     # add one to an existing site
 | `auth` | Email and password accounts with [Better Auth](https://www.better-auth.com), stored in Cloudflare D1 through Drizzle. Adds `/login`, a protected `/account` page, `getSession` for route guards, and SQL migrations. |
 | `dashboard` | A [shadcn/ui](https://ui.shadcn.com) sidebar dashboard inside `/account`: overview with stat cards and a table, a settings page that edits the profile name, and a user menu with sign out. Requires `auth`, which is added automatically. |
 
-**Auth setup.** Locally it works right after the module is added: run `yarn dev` and open `/login`. A random `BETTER_AUTH_SECRET` is written to `.dev.vars` and the local D1 database is migrated. For production, run `yarn auth:setup` once. It creates the D1 database, saves its id in `wrangler.jsonc`, applies the migrations and prints a secret to add to the Worker (dashboard: **Settings**, then **Variables and secrets**). Commit `wrangler.jsonc` afterwards. Protect a page by copying the `beforeLoad` guard from `src/routes/account.tsx`.
+**Auth setup.** Locally it works right after `yarn init-site` (or `yarn add-module auth`): run `yarn dev` and open `/login`. A random `BETTER_AUTH_SECRET` is written to `.dev.vars` and the local D1 database is migrated. For production, run `yarn auth:setup` once. It creates the D1 database, saves its id in `wrangler.jsonc`, applies the migrations and prints a secret to add to the Worker (dashboard: **Settings**, then **Variables and secrets**). Commit `wrangler.jsonc` afterwards. Protect a page by copying the `beforeLoad` guard from `src/routes/account.tsx`.
 
 **Dashboard.** Pages live in `src/routes/account/`. To add one, create the route file, then add it to the `items` list in `src/components/app-sidebar.tsx` and to `titles` in `src/routes/account.tsx`. The overview numbers are placeholders. The sidebar follows the site's design tokens, so it restyles with every design.
 
