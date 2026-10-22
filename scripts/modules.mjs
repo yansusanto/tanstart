@@ -65,7 +65,8 @@ export function setupModule(name) {
     }
     write('.dev.vars', vs)
   }
-  for (const cmd of mod.postAdd ?? []) execSync(cmd, { cwd: root, stdio: 'inherit' })
+  // CI=1 keeps wrangler from asking to confirm local migrations.
+  for (const cmd of mod.postAdd ?? []) execSync(cmd, { cwd: root, stdio: 'inherit', env: { ...process.env, CI: '1' } })
 }
 
 export function addModule(name, { install = true } = {}) {

@@ -15,7 +15,12 @@ A starter for new websites: TanStack Start on Cloudflare Workers, with a design 
    ```
 
 3. Enter the project name, then pick a design. Type a number, a brand name, or any text to filter the list (for example `dark` or `bank`). Press Enter to keep the default, **Cursor**.
-4. Choose which modules to keep. The starter ships with **login** (`auth`) and a **dashboard**, so the demo shows the full flow. Press Enter to keep both, type `none` for a landing-page-only site, or type `auth` to keep login without the dashboard. Removed modules are deleted cleanly, including their packages and Cloudflare bindings.
+4. Pick what the site includes, with the arrow keys and Enter:
+   - **Login and dashboard** (the first option, so Enter keeps it): the full demo with sign-in, an account area and a sidebar dashboard.
+   - **Login**: sign-in, sign-up and a protected account page, without the dashboard.
+   - **Landing page only**: no login and no database.
+
+   Modules you do not pick are removed cleanly, including their packages and Cloudflare bindings.
 5. Start the dev server:
 
    ```bash
@@ -76,7 +81,7 @@ yarn deploy
 
 This runs `yarn build` and `wrangler deploy`. Run `npx wrangler login` first if the machine is not signed in.
 
-**Automatic deploys.** In the Cloudflare dashboard, open **Workers & Pages**, choose the Worker, and connect the Git repo under **Settings**, then **Builds**. Each push to `main` then builds and deploys.
+**Automatic deploys.** In the Cloudflare dashboard, open **Workers & Pages**, choose the Worker, and connect the Git repo under **Settings**, then **Builds**. Each push to `main` then builds and deploys. This project uses Yarn 1 (`yarn.lock` is a Yarn 1 file), but Cloudflare's build image defaults to Yarn 4, which fails with "The lockfile would have been modified". Add a build variable under **Settings**, then **Build**, then **Variables and secrets**: `YARN_VERSION` = `1.22.22`. The `packageManager` field in `package.json` records the same version.
 
 **Domains.** Add the domain under the Worker's **Settings**, then **Domains & Routes**, then **Custom domain**. To redirect `www` to the apex domain, add a proxied `CNAME` for `www` and a redirect rule from `https://www.example.com/*` to `https://example.com/${1}` (301, preserve query string). Domains are set per site in the dashboard and are intentionally not stored in this template.
 

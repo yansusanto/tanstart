@@ -1,6 +1,8 @@
 {
 	"name": "auth",
 	"title": "Authentication",
+	"label": "Login",
+	"summary": "sign-in, sign-up and a protected account page",
 	"description": "Email and password accounts with Better Auth, stored in Cloudflare D1 through Drizzle. Adds /login, a protected /account example and session helpers.",
 	"dependencies": {
 		"better-auth": "^1.7.12",

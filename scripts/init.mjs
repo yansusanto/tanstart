@@ -3,16 +3,61 @@
 // Sets the project name, then lets you pick a design from the awesome-claude-design collection.
 import { execSync, spawnSync } from 'node:child_process'
 import { copyFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs'
-import { createInterface } from 'node:readline'
+import { createInterface, emitKeypressEvents } from 'node:readline'
 import { addModule, installedModules, listModules, removeModule, setupModule } from './modules.mjs'
 
 const DEFAULT = 'cursor'
-const rl = createInterface({ input: process.stdin, output: process.stdout })
-const lines = rl[Symbol.asyncIterator]()
+let rl
+let lines
+const open = () => {
+  rl = createInterface({ input: process.stdin, output: process.stdout })
+  lines = rl[Symbol.asyncIterator]()
+}
+open()
 const ask = async (q) => {
   process.stdout.write(q)
   const { value } = await lines.next()
   return (value ?? '').trim()
+}
+
+// Arrow-key menu: up/down to move, Enter to choose. Without a terminal (piped input) it asks for a number instead.
+async function select(title, options) {
+  console.log(`\n${title}`)
+  if (!process.stdin.isTTY) {
+    options.forEach((o, i) => console.log(`${String(i + 1).padStart(3)}  ${o.label}${o.hint ? `  ${o.hint}` : ''}`))
+    const n = Number(await ask('\nNumber (Enter = 1): '))
+    return options[n >= 1 && n <= options.length ? n - 1 : 0].value
+  }
+  rl.close()
+  emitKeypressEvents(process.stdin)
+  process.stdin.setRawMode(true)
+  process.stdin.resume()
+  let i = 0
+  const draw = (first) => {
+    if (!first) process.stdout.write(`\x1b[${options.length}A`)
+    options.forEach((o, n) => {
+      const on = n === i
+      process.stdout.write(`\x1b[2K${on ? '\x1b[36m❯\x1b[0m' : ' '} ${on ? `\x1b[1m${o.label}\x1b[0m` : o.label}${o.hint ? `\x1b[2m  ${o.hint}\x1b[0m` : ''}\n`)
+    })
+  }
+  draw(true)
+  await new Promise((resolve) => {
+    const onKey = (_, key) => {
+      if (key.ctrl && key.name === 'c') process.exit(130)
+      if (key.name === 'up') i = (i + options.length - 1) % options.length
+      else if (key.name === 'down') i = (i + 1) % options.length
+      else if (key.name === 'return') {
+        process.stdin.off('keypress', onKey)
+        return resolve()
+      }
+      draw(false)
+    }
+    process.stdin.on('keypress', onKey)
+  })
+  process.stdin.setRawMode(false)
+  process.stdin.pause()
+  open()
+  return options[i].value
 }
 
 const slugify = (s) =>
@@ -78,14 +123,20 @@ const parse = (text, pool) =>
 
 let keep = installed
 if (installed.length) {
-  const pool = all.filter((m) => installed.includes(m.name))
-  console.log('\nIncluded in this starter:')
-  pool.forEach((m, i) => console.log(`${String(i + 1).padStart(3)}  ${m.name.padEnd(12)} ${m.description}`))
-  const a = await ask('\nKeep which? Enter = all, "none" for a landing page, or names/numbers (for example auth): ')
-  if (a.toLowerCase() === 'none') keep = []
-  else if (a) keep = parse(a, pool)
-  // A kept module needs what it requires
-  for (const m of [...keep]) for (const r of all.find((x) => x.name === m)?.requires ?? []) if (!keep.includes(r)) keep.push(r)
+  // One option per step: everything installed, then fewer modules, down to none.
+  const info = (n) => all.find((m) => m.name === n)
+  const options = installed
+    .map((_, n) => installed.length - n)
+    .map((count) => {
+      const set = installed.slice(0, count)
+      return {
+        value: set,
+        label: set.map((n, k) => (k ? (info(n).label ?? n).toLowerCase() : (info(n).label ?? n))).join(' and ') + (count === installed.length ? ' (recommended)' : ''),
+        hint: set.map((n) => info(n).summary).filter(Boolean).join('; '),
+      }
+    })
+  options.push({ value: [], label: 'Landing page only', hint: 'No login and no database' })
+  keep = await select('What should this site include?', options)
 }
 const extras = all.filter((m) => !installed.includes(m.name))
 let picked = []
