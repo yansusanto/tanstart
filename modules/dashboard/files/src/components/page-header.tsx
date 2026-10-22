@@ -8,7 +8,7 @@ export function PageHeader({
 }) {
 	return (
 		<div className="grid gap-1.5">
-			<h1 className="text-2xl leading-tight">{title}</h1>
+			<h1 className="text-2xl leading-tight font-medium">{title}</h1>
 			{description && (
 				<p className="text-sm text-muted-foreground">{description}</p>
 			)}

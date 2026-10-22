@@ -125,11 +125,11 @@ const frameVariants = tv({
     variant: {
       default: {
         // `overflow-hidden` is what gives the panel the shell's bottom corners.
-        root: 'overflow-hidden rounded-3xl border bg-sidebar',
+        root: 'overflow-hidden rounded-3xl border bg-muted',
       },
       plain: {},
       band: {
-        root: 'rounded-3xl bg-sidebar p-1.5',
+        root: 'rounded-3xl bg-muted p-1.5',
       },
       inset: {
         // The band is the popover surface with black mixed in, so it is the
