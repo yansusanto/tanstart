@@ -1,0 +1,65 @@
+/*
+ * THEME FILE. This is the only file that changes when a site switches design.
+ * Source: DESIGN.md (run `yarn design <brand>`), applied with /apply-design.
+ * Components must use these tokens through Tailwind classes (bg-primary, text-muted-foreground, ...) and never hardcode colors.
+ *
+ * Current design: OpenCode (opencode.ai)
+ */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+	--font-body:
+		"Berkeley Mono", "JetBrains Mono", "IBM Plex Mono", ui-monospace,
+		SFMono-Regular, Menlo, monospace;
+	--font-display: var(--font-body);
+	--heading-weight: 700;
+	--heading-tracking: 0;
+	--radius: 4px;
+
+	--background: #fdfcfc;
+	--foreground: #201d1d;
+	--card: #f8f7f7;
+	--card-foreground: #201d1d;
+	--popover: #fdfcfc;
+	--popover-foreground: #201d1d;
+	--primary: #201d1d;
+	--primary-foreground: #fdfcfc;
+	--secondary: #f1eeee;
+	--secondary-foreground: #201d1d;
+	--muted: #f1eeee;
+	--muted-foreground: #646262;
+	--accent: #007aff;
+	--accent-foreground: #fdfcfc;
+	--destructive: #ff3b30;
+	--destructive-foreground: #fdfcfc;
+	--border: rgba(15, 0, 0, 0.12);
+	--input: rgba(15, 0, 0, 0.12);
+	--ring: #007aff;
+	--chart-1: #007aff;
+	--chart-2: #30d158;
+	--chart-3: #ff9f0a;
+	--chart-4: #ff3b30;
+	--chart-5: #646262;
+}
+
+.dark {
+	--background: #201d1d;
+	--foreground: #fdfcfc;
+	--card: #302c2c;
+	--card-foreground: #fdfcfc;
+	--popover: #302c2c;
+	--popover-foreground: #fdfcfc;
+	--primary: #fdfcfc;
+	--primary-foreground: #201d1d;
+	--secondary: #302c2c;
+	--secondary-foreground: #fdfcfc;
+	--muted: #302c2c;
+	--muted-foreground: #9a9898;
+	--accent: #007aff;
+	--accent-foreground: #fdfcfc;
+	--destructive: #ff3b30;
+	--destructive-foreground: #fdfcfc;
+	--border: rgba(253, 252, 252, 0.14);
+	--input: rgba(253, 252, 252, 0.14);
+	--ring: #007aff;
+}

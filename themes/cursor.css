@@ -1,0 +1,63 @@
+/*
+ * THEME FILE. This is the only file that changes when a site switches design.
+ * Source: DESIGN.md (run `yarn design <brand>`), applied with /apply-design.
+ * Components must use these tokens through Tailwind classes (bg-primary, text-muted-foreground, ...) and never hardcode colors.
+ *
+ * Current design: Cursor (cursor.com). CursorGothic is proprietary, so Inter is the substitute.
+ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+	--font-body: 'CursorGothic', 'Inter', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	--font-display: var(--font-body);
+	--heading-weight: 400;
+	--heading-tracking: -0.03em;
+	--radius: 8px;
+
+	--background: #f7f7f4;
+	--foreground: #26251e;
+	--card: #ffffff;
+	--card-foreground: #26251e;
+	--popover: #ffffff;
+	--popover-foreground: #26251e;
+	--primary: #f54e00;
+	--primary-foreground: #ffffff;
+	--secondary: #e6e5e0;
+	--secondary-foreground: #26251e;
+	--muted: #efeee8;
+	--muted-foreground: #5a5852;
+	--accent: #efeee8;
+	--accent-foreground: #26251e;
+	--destructive: #cf2d56;
+	--destructive-foreground: #ffffff;
+	--border: #e6e5e0;
+	--input: #cfcdc4;
+	--ring: #f54e00;
+	--chart-1: #dfa88f;
+	--chart-2: #9fc9a2;
+	--chart-3: #9fbbe0;
+	--chart-4: #c0a8dd;
+	--chart-5: #c08532;
+}
+
+.dark {
+	--background: #1b1a15;
+	--foreground: #f7f7f4;
+	--card: #26251e;
+	--card-foreground: #f7f7f4;
+	--popover: #26251e;
+	--popover-foreground: #f7f7f4;
+	--primary: #f54e00;
+	--primary-foreground: #ffffff;
+	--secondary: #33322a;
+	--secondary-foreground: #f7f7f4;
+	--muted: #33322a;
+	--muted-foreground: #a09c92;
+	--accent: #33322a;
+	--accent-foreground: #f7f7f4;
+	--destructive: #cf2d56;
+	--destructive-foreground: #ffffff;
+	--border: rgba(247, 247, 244, 0.14);
+	--input: rgba(247, 247, 244, 0.2);
+	--ring: #f54e00;
+}
