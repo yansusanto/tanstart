@@ -2,7 +2,7 @@
 
 A starter for new websites: TanStack Start on Cloudflare Workers, with a design you pick from a collection of ready-made design systems. Scores 100 on all four Lighthouse categories out of the box.
 
-**Stack:** TanStack Start (React, file-based routing, server functions), Tailwind CSS v4, shadcn/ui, TanStack Query, Biome, Cloudflare Workers.
+**Stack:** TanStack Start (React, file-based routing, server functions), Tailwind CSS v4, shadcn/ui with [PanelUI](https://panelui.dev), TanStack Query, Biome, Cloudflare Workers.
 
 ## Start a new site
 
@@ -98,11 +98,11 @@ yarn remove-module <name>  # remove one (a module that others require must go la
 | Module | What it adds |
 |---|---|
 | `auth` | Email and password accounts with [Better Auth](https://www.better-auth.com), stored in Cloudflare D1 through Drizzle. Adds `/login`, a protected `/account` page, `getSession` for route guards, and SQL migrations. |
-| `dashboard` | A [shadcn/ui](https://ui.shadcn.com) sidebar dashboard inside `/account`: overview with stat cards and a table, a settings page that edits the profile name, and a user menu with sign out. Requires `auth`, which is added automatically. |
+| `dashboard` | A sidebar dashboard inside `/account`, built with shadcn/ui and PanelUI: overview with goal cards, week charts and a recent orders list, a settings page that edits the profile name, and a user menu with sign out. Requires `auth`, which is added automatically. |
 
 **Auth setup.** Locally it works right after `yarn init-site` (or `yarn add-module auth`): run `yarn dev` and open `/login`. A random `BETTER_AUTH_SECRET` is written to `.dev.vars` and the local D1 database is migrated. For production, run `yarn auth:setup` once. It creates the D1 database, saves its id in `wrangler.jsonc`, applies the migrations and prints a secret to add to the Worker (dashboard: **Settings**, then **Variables and secrets**). Commit `wrangler.jsonc` afterwards. Protect a page by copying the `beforeLoad` guard from `src/routes/account.tsx`.
 
-**Dashboard.** Pages live in `src/routes/account/`. To add one, create the route file, then add it to the `items` list in `src/components/app-sidebar.tsx` and to `titles` in `src/routes/account.tsx`. The overview numbers are placeholders. The sidebar follows the site's design tokens, so it restyles with every design.
+**Dashboard.** Pages live in `src/routes/account/`. To add one, create the route file, then add it to the `items` list in `src/components/app-sidebar.tsx` and to `titles` in `src/routes/account.tsx`. The overview numbers are placeholders. The overview uses PanelUI `frame`, `stat`, `bar-picker` and `range-meter`. The sidebar follows the site's design tokens, so it restyles with every design.
 
 To change the auth tables, edit `src/db/schema.ts`, run `yarn db:generate`, then `yarn db:migrate:local` and `yarn db:migrate:remote`.
 
@@ -121,7 +121,8 @@ It adds this repo as a `template` remote, works out what changed since the site 
 ```
 src/
   routes/            File-based routes. __root.tsx holds the document shell and default meta tags.
-  components/ui/     shadcn/ui components.
+  components/ui/     shadcn/ui components (badge, breadcrumb, separator, sidebar, skeleton, table, tooltip).
+  components/panelui/ PanelUI components (button, card, input, label, avatar, sheet, menu, frame, stat, bar-picker, range-meter).
   components/        Site components (theme-hotkey.tsx).
   theme.css          Design tokens: colors, fonts, radius. The file that changes per design.
   styles.css         Maps tokens into Tailwind. Rarely changes.
@@ -135,7 +136,12 @@ DESIGN.md            The active design, downloaded by getdesign.
 AGENTS.md            Project rules for Claude and other coding agents.
 ```
 
-Add shadcn/ui components with `npx shadcn@latest add <component>`. They already read the theme tokens.
+The UI is a hybrid of shadcn/ui and PanelUI. Both read the theme tokens in `src/theme.css`.
+
+- Add a shadcn/ui component with `npx shadcn@latest add <component>`. It goes in `src/components/ui/`.
+- Add a PanelUI component with `npx shadcn@latest add https://panelui.dev/r/web/<name>.json`. It goes in `src/components/panelui/` and uses `@base-ui/react` and `tailwind-variants`. Prefer PanelUI where it has a match, and keep shadcn/ui for what PanelUI does not offer.
+- PanelUI uses a `render` prop where shadcn/ui uses `asChild`. To style a link as a button, apply `buttonVariants()` to the `Link`.
+- PanelUI colors `info`, `success` and `warning` need `--info`, `--success` and `--warning` tokens, which the theme does not define yet. Use the default `primary` color until they are added.
 
 ## Scripts
 

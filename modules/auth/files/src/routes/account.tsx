@@ -1,5 +1,5 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Button } from "#/components/ui/button";
+import { Button } from "#/components/panelui/button";
 import { authClient } from "#/lib/auth-client";
 import { getSession } from "#/lib/session";
 

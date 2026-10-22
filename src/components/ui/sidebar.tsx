@@ -7,16 +7,10 @@ import { PanelLeftIcon } from "lucide-react"
 import { Slot } from "radix-ui"
 
 import { useIsMobile } from "#/hooks/use-mobile.ts"
-import { Button } from "#/components/ui/button.tsx"
-import { Input } from "#/components/ui/input.tsx"
+import { Button } from "#/components/panelui/button"
+import { Input } from "#/components/panelui/input"
 import { Separator } from "#/components/ui/separator.tsx"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "#/components/ui/sheet.tsx"
+import { Sheet } from "#/components/panelui/sheet"
 import { Skeleton } from "#/components/ui/skeleton.tsx"
 import {
   Tooltip,
@@ -182,25 +176,31 @@ function Sidebar({
 
   if (isMobile) {
     return (
-      <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-        <SheetContent
+      <Sheet
+        open={openMobile}
+        onOpenChange={setOpenMobile}
+        side={side}
+      >
+        <Sheet.Content
           data-sidebar="sidebar"
           data-slot="sidebar"
           data-mobile="true"
-          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          detached={false}
+          showClose={false}
+          className="w-(--sidebar-width) bg-sidebar p-0 text-sidebar-foreground"
           style={
             {
               "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
             } as React.CSSProperties
           }
-          side={side}
         >
-          <SheetHeader className="sr-only">
-            <SheetTitle>Sidebar</SheetTitle>
-            <SheetDescription>Displays the mobile sidebar.</SheetDescription>
-          </SheetHeader>
+          <Sheet.Header
+            className="sr-only"
+            title="Sidebar"
+            description="Displays the mobile sidebar."
+          />
           <div className="flex h-full w-full flex-col">{children}</div>
-        </SheetContent>
+        </Sheet.Content>
       </Sheet>
     )
   }

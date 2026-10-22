@@ -3,7 +3,10 @@
 	"title": "Dashboard",
 	"label": "Dashboard",
 	"summary": "sidebar dashboard with overview and settings",
-	"description": "A shadcn sidebar dashboard inside /account: overview with stat cards and a table, a settings page, and a user menu with sign out. Requires auth.",
+	"description": "A sidebar dashboard inside /account: overview with stat cards and a table, a settings page, and a user menu with sign out. Requires auth.",
+	"dependencies": {
+		"@base-ui/react": "^1.9.0"
+	},
 	"requires": [
 		"auth"
 	],

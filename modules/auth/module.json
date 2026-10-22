@@ -52,7 +52,12 @@
 		{
 			"file": "src/routes/index.tsx",
 			"find": "<Button>Get started</Button>",
-			"replace": "<Button asChild>\n\t\t\t\t\t<Link to=\"/login\">Get started</Link>\n\t\t\t\t</Button>"
+			"replace": "<Link to=\"/login\" className={buttonVariants()}>\n\t\t\t\t\tGet started\n\t\t\t\t</Link>"
+		},
+		{
+			"file": "src/routes/index.tsx",
+			"find": "import { Button } from \"#/components/panelui/button\";",
+			"replace": "import { Button, buttonVariants } from \"#/components/panelui/button\";"
 		}
 	]
 }

@@ -1,16 +1,16 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { PageHeader } from "#/components/page-header";
-import { Button } from "#/components/ui/button";
+import { Button } from "#/components/panelui/button";
 import {
 	Card,
 	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,
-} from "#/components/ui/card";
-import { Input } from "#/components/ui/input";
-import { Label } from "#/components/ui/label";
+} from "#/components/panelui/card";
+import { Input } from "#/components/panelui/input";
+import { Label } from "#/components/panelui/label";
 import { authClient } from "#/lib/auth-client";
 
 export const Route = createFileRoute("/account/settings")({
