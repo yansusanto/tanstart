@@ -63,6 +63,16 @@ This runs `yarn build` and `wrangler deploy`. Run `npx wrangler login` first if 
 
 **Domains.** Add the domain under the Worker's **Settings**, then **Domains & Routes**, then **Custom domain**. To redirect `www` to the apex domain, add a proxied `CNAME` for `www` and a redirect rule from `https://www.example.com/*` to `https://example.com/${1}` (301, preserve query string). Domains are set per site in the dashboard and are intentionally not stored in this template.
 
+## Updating a site from the template
+
+GitHub templates copy the files once, so a site does not receive later starter changes on its own. In the site, run the Claude Code command:
+
+```
+/update-starter
+```
+
+It adds this repo as a `template` remote, works out what changed since the site was last synced (recorded in `.starter-sync`), and applies those changes. It never overwrites the site's design (`src/theme.css`, `DESIGN.md`, `themes/`), name, domains or page content. It runs the build, leaves the changes uncommitted for review, and reports what it did. Sites created before this command existed need the file `.claude/commands/update-starter.md` copied in once.
+
 ## Project structure
 
 ```
@@ -74,7 +84,7 @@ src/
   styles.css         Maps tokens into Tailwind. Rarely changes.
 themes/              Saved theme.css files, one per design.
 scripts/init.mjs     The yarn init-site prompt.
-.claude/commands/    The /apply-design command.
+.claude/commands/    The /apply-design and /update-starter commands.
 DESIGN.md            The active design, downloaded by getdesign.
 AGENTS.md            Project rules for Claude and other coding agents.
 ```
