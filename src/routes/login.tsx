@@ -1,5 +1,6 @@
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { Logo } from "#/components/logo";
 import { Button } from "#/components/panelui/button";
 import {
 	Card,
@@ -90,7 +91,8 @@ function Login() {
 
 	return (
 		<main className="grid min-h-screen lg:grid-cols-2">
-			<div className="flex items-center justify-center px-6 py-12">
+			<div className="flex flex-col items-center justify-center gap-8 px-6 py-12">
+				<Logo className="text-primary" />
 				<Card className="w-full max-w-sm">
 					<CardHeader>
 						<CardTitle>
@@ -155,18 +157,21 @@ function Login() {
 								</Button>
 							</>
 						)}
-						<Button
-							variant="link"
-							className="mt-2 px-0"
-							onClick={() => {
-								setError("");
-								setMode(mode === "signin" ? "signup" : "signin");
-							}}
-						>
+						<p className="mt-4 text-sm text-muted-foreground">
 							{mode === "signin"
-								? "No account yet? Create one"
-								: "Already have an account? Sign in"}
-						</Button>
+								? "Don't have an account? "
+								: "Already have an account? "}
+							<button
+								type="button"
+								className="text-primary hover:underline"
+								onClick={() => {
+									setError("");
+									setMode(mode === "signin" ? "signup" : "signin");
+								}}
+							>
+								{mode === "signin" ? "Sign up" : "Sign in"}
+							</button>
+						</p>
 					</CardContent>
 				</Card>
 			</div>

@@ -11,6 +11,7 @@
         "migrations/meta/0000_snapshot.json",
         "migrations/meta/_journal.json",
         "scripts/setup-auth.mjs",
+        "src/components/logo.tsx",
         "src/components/panelui/input.tsx",
         "src/components/panelui/label.tsx",
         "src/db/schema.ts",
