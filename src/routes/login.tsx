@@ -55,7 +55,6 @@ function GoogleIcon() {
 function Login() {
 	const navigate = useNavigate();
 	const googleEnabled = Route.useLoaderData();
-	const [mode, setMode] = useState<"signin" | "signup">("signin");
 	const [error, setError] = useState("");
 	const [pending, setPending] = useState(false);
 
@@ -66,14 +65,18 @@ function Login() {
 		const form = new FormData(e.currentTarget);
 		const email = String(form.get("email"));
 		const password = String(form.get("password"));
-		const { error } =
-			mode === "signup"
-				? await authClient.signUp.email({
-						email,
-						password,
-						name: String(form.get("name")),
-					})
-				: await authClient.signIn.email({ email, password });
+		let { error } = await authClient.signIn.email({ email, password });
+		// An unknown email creates the account. Better Auth gives the same error for an unknown email and a wrong password.
+		if (error?.code === "INVALID_EMAIL_OR_PASSWORD") {
+			const signUp = await authClient.signUp.email({
+				email,
+				password,
+				name: email.split("@")[0],
+			});
+			error = signUp.error?.code?.startsWith("USER_ALREADY_EXISTS")
+				? error
+				: signUp.error;
+		}
 		setPending(false);
 		if (error) return setError(error.message ?? "Something went wrong.");
 		await navigate({ to: "/account" });
@@ -93,23 +96,13 @@ function Login() {
 			<div className="flex items-center justify-center px-6 py-12">
 				<Card className="w-full max-w-sm">
 					<CardHeader>
-						<CardTitle>
-							{mode === "signin" ? "Sign in" : "Create an account"}
-						</CardTitle>
+						<CardTitle>Sign in</CardTitle>
 						<CardDescription>
-							{mode === "signin"
-								? "Use your email and password."
-								: "An email and a password of at least 8 characters."}
+							Use your email and password. A new email creates an account.
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={onSubmit} className="grid gap-4">
-							{mode === "signup" && (
-								<div className="grid gap-2">
-									<Label htmlFor="name">Name</Label>
-									<Input id="name" name="name" autoComplete="name" required />
-								</div>
-							)}
 							<div className="grid gap-2">
 								<Label htmlFor="email">Email</Label>
 								<Input
@@ -127,9 +120,7 @@ function Login() {
 									name="password"
 									type="password"
 									minLength={8}
-									autoComplete={
-										mode === "signin" ? "current-password" : "new-password"
-									}
+									autoComplete="current-password"
 									required
 								/>
 							</div>
@@ -139,7 +130,7 @@ function Login() {
 								</p>
 							)}
 							<Button type="submit" disabled={pending}>
-								{mode === "signin" ? "Sign in" : "Create account"}
+								Continue
 							</Button>
 						</form>
 						{googleEnabled && (
@@ -155,21 +146,6 @@ function Login() {
 								</Button>
 							</>
 						)}
-						<p className="mt-4 text-sm text-muted-foreground">
-							{mode === "signin"
-								? "Don't have an account? "
-								: "Already have an account? "}
-							<button
-								type="button"
-								className="text-primary hover:underline"
-								onClick={() => {
-									setError("");
-									setMode(mode === "signin" ? "signup" : "signin");
-								}}
-							>
-								{mode === "signin" ? "Sign up" : "Sign in"}
-							</button>
-						</p>
 					</CardContent>
 				</Card>
 			</div>
