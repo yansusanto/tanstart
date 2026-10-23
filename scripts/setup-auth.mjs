@@ -33,4 +33,7 @@ or: npx wrangler secret put BETTER_AUTH_SECRET). Use a new random value, for exa
 
   ${randomBytes(32).toString('base64')}
 
+For optional Google sign-in, also add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET as secrets, with the redirect URI
+https://<your-domain>/api/auth/callback/google in the Google Cloud OAuth client.
+
 Then commit wrangler.jsonc (it now holds the database id) and deploy.`)

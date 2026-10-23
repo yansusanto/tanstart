@@ -3,7 +3,7 @@
 	"title": "Authentication",
 	"label": "Login",
 	"summary": "sign-in, sign-up and a protected account page",
-	"description": "Email and password accounts with Better Auth, stored in Cloudflare D1 through Drizzle. Adds /login, a protected /account example and session helpers.",
+	"description": "Email and password accounts, plus optional Google sign-in, with Better Auth, stored in Cloudflare D1 through Drizzle. Adds /login, a protected /account example and session helpers.",
 	"dependencies": {
 		"better-auth": "^1.7.12",
 		"drizzle-orm": "^0.45.4"
@@ -41,6 +41,7 @@
 		"The \"Get started\" button on the home page now links to /login.",
 		"Local: ready. Run yarn dev, then open /login.",
 		"Production: run `yarn auth:setup` once. It creates the D1 database, writes its id to wrangler.jsonc, applies the migrations, and prints the BETTER_AUTH_SECRET to add as a secret on the Worker.",
+		"Google sign-in is optional. Create an OAuth 2.0 Web client in Google Cloud Console with the redirect URI <origin>/api/auth/callback/google (http://localhost:4000 locally), then set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in .dev.vars and as Worker secrets. The button appears only when both are set.",
 		"Protect a page by copying the beforeLoad guard from src/routes/account.tsx."
 	],
 	"patches": [

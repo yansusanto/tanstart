@@ -7,11 +7,22 @@ import { getDb } from "#/lib/db";
 
 let instance: ReturnType<typeof create> | undefined;
 
+const google = () => {
+	const { GOOGLE_CLIENT_ID: clientId, GOOGLE_CLIENT_SECRET: clientSecret } =
+		env as unknown as Record<string, string | undefined>;
+	return clientId && clientSecret ? { clientId, clientSecret } : undefined;
+};
+
+/** Google sign-in is offered only when both credentials are set. */
+export const googleEnabled = () => Boolean(google());
+
 function create() {
+	const googleProvider = google();
 	return betterAuth({
 		database: drizzleAdapter(getDb(), { provider: "sqlite", schema }),
 		secret: env.BETTER_AUTH_SECRET,
 		emailAndPassword: { enabled: true },
+		socialProviders: googleProvider ? { google: googleProvider } : {},
 		// Must stay the last plugin.
 		plugins: [tanstackStartCookies()],
 	});
